@@ -8,7 +8,7 @@ slack_webhook_url (required): Slack webhook URL for sending notifications.
 allow_list (optional): A regex pattern for allowed licenses. Default: '(MIT|BSD|ISC|Apache|CC0|buyer-app)'.
 
 ## Example Usage
-<pre>
+
 ```yaml
 name: 'Arazutech: Python License Check'
 description: 'Checks the licenses of Python dependencies and sends notifications if restricted licenses are found'
@@ -51,7 +51,6 @@ runs:
       shell: bash
       if: always()
 ```
-</pre>
 
 ## License
 
