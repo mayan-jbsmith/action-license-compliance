@@ -10,9 +10,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Python init 
-      uses: ./path/to/python.yml
-
     - name: 'Check Dependencies Licenses'
       run: |
         chmod +x ${{ github.action_path }}/license_check.sh
