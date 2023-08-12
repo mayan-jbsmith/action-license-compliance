@@ -7,6 +7,9 @@ inputs:
   allow_list:
     description: 'Regex pattern for allowed licenses'
     default: '(MIT|BSD|ISC|Apache|CC0|buyer-app)'
+  block_list:
+    description: 'Regex pattern for blocked licenses'
+    default: '(GPL|MPL|LGPL)'
 runs:
   using: 'composite'
   steps:
