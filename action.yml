@@ -10,9 +10,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: 'Run license check on dependencies'
-      run: pip-licenses --format=csv --with-urls --no-version --output-file=licenses.csv
-      shell: bash
 
     - name: 'Check for restricted licenses'
       run: |
