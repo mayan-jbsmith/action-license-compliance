@@ -1,9 +1,9 @@
-name: 'Arazutech: Python License Check'
-description: 'Checks the licenses of Python dependencies and sends notifications if restricted licenses are found'
+name: 'License Compliance Checker'
+description: 'Check the licenses of dependencies and optionally send Slack notifications if restricted licenses are found'
 inputs:
   slack_webhook_url:
-    description: 'Slack webhook URL for sending notifications'
-    required: true
+    description: 'Slack webhook URL for sending notifications (optional)'
+    required: false
   allow_list:
     description: 'Regex pattern for allowed licenses'
     default: '(MIT|BSD|ISC|Apache|CC0|buyer-app)'
@@ -11,30 +11,34 @@ runs:
   using: 'composite'
   steps:
 
-    - name: 'Check for restricted licenses'
+    - name: 'Check Dependencies Licenses'
       run: |
         chmod +x ${{ github.action_path }}/license_check.sh
         ${{ github.action_path }}/license_check.sh licenses.csv "${{ inputs.allow_list }}"
       shell: bash
 
-    - name: 'Show all license info'
+    - name: 'Display License Information'
       run: |
         chmod +x ${{ github.action_path }}/show_license.sh
         ${{ github.action_path }}/show_license.sh licenses.csv
       shell: bash
       if: always()
 
-    - name: 'Format output to JSON'
+    - name: 'Format Output as JSON'
       run: |
         chmod +x ${{ github.action_path }}/create_json.sh
         ${{ github.action_path }}/create_json.sh invalid.csv
       shell: bash
       if: always()
 
-    - name: 'POST JSON'
+    - name: 'Notify on Restricted Licenses'
       run: |
-        json_data=$(cat slack_message.json)
-        escaped_json_data=$(echo "$json_data" | jq -c .)
-        curl -X POST -H 'Content-type: application/json' --data "$escaped_json_data" ${{ inputs.slack_webhook_url }}
+        if [ -n "${{ inputs.slack_webhook_url }}" ]; then
+          json_data=$(cat slack_message.json)
+          escaped_json_data=$(echo "$json_data" | jq -c .)
+          curl -X POST -H 'Content-type: application/json' --data "$escaped_json_data" ${{ inputs.slack_webhook_url }}
+        else
+          echo "Slack webhook URL not provided. Skipping notification."
+        fi
       shell: bash
       if: always()
