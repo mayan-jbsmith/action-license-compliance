@@ -16,13 +16,11 @@ fi
     echo "<th>#</th> <th>Status</th> <th>Name</th> <th>License Type</th>"
 } >>"$GITHUB_STEP_SUMMARY"
 
-re=$(echo "$ALLOW_LIST" | tr ' ' '|')
-re="($re)"
-
 while IFS=',' read -r line; do
     TOTAL_COUNTER=$((TOTAL_COUNTER + 1))
 
-    if ! [[ ${line} =~ $re ]] || [[ ${line} =~ "GPL" ]]; then
+    # Check if the license does not match the ALLOW_LIST or contains "GPL"
+    if ! [[ ${line} =~ $ALLOW_LIST ]] || [[ ${line} =~ "GPL" ]]; then
         echo $line >>invalid.csv
         if ! [[ ${line} =~ "Name" ]]; then
             FAIL_COUNTER=$((FAIL_COUNTER + 1))
