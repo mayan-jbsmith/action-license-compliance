@@ -1,6 +1,8 @@
 #!/bin/bash
 
 INPUT_FILE="$1"
+ALLOW_LIST="$2"
+BLOCK_LIST="$3"
 
 if [ $# -ne 1 ]; then
     echo "Usage: $0 <licenses.csv>"
@@ -16,8 +18,7 @@ fi
 sed 1d $INPUT_FILE | while IFS=',' read -r line; do
     TOTAL_COUNTER=$(($TOTAL_COUNTER + 1))
     ICON=":green_circle:"
-    re="(MIT|BSD|ISC|Apache|CC0)"
-    if ! [[ ${line} =~ $re ]] || [[ ${line} =~ "GPL" ]]; then
+    if ! [[ ${line} =~ $ALLOW_LIST ]] || [[ ${line} =~ $BLOCK_LIST ]]; then
         ICON=":red_circle:"
     fi
     if ! [[ ${line} =~ "Name" ]]; then

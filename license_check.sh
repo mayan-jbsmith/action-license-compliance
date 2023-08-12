@@ -20,7 +20,6 @@ fi
 while IFS=',' read -r line; do
     TOTAL_COUNTER=$((TOTAL_COUNTER + 1))
 
-    # Check if the license does not match the ALLOW_LIST or contains "GPL"
     if ! [[ ${line} =~ $ALLOW_LIST ]] || [[ ${line} =~ $BLOCK_LIST ]]; then
         echo $line >>invalid.csv
         if ! [[ ${line} =~ "Name" ]]; then

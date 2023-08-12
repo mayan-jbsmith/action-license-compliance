@@ -22,7 +22,7 @@ runs:
     - name: 'Display License Information'
       run: |
         chmod +x ${{ github.action_path }}/show_license.sh
-        ${{ github.action_path }}/show_license.sh licenses.csv
+        ${{ github.action_path }}/show_license.sh licenses.csv "${{ inputs.allow_list }}" "${{ inputs.block_list }}"
       shell: bash
       if: always()
 
