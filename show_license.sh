@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INPUT_FILE="$1"
-echo "WORKING SHOW" >>"$GITHUB_STEP_SUMMARY"
+
 if [ $# -ne 1 ]; then
     echo "Usage: $0 <licenses.csv>"
     exit 1

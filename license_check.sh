@@ -4,7 +4,7 @@ TOTAL_COUNTER=0
 FAIL_COUNTER=0
 INPUT_FILE="$1"
 ALLOW_LIST="$2"
-echo "WORKING" >>"$GITHUB_STEP_SUMMARY"
+
 if [ $# -ne 2 ]; then
     echo "Usage: $0 <licenses.csv> <allow_list>"
     exit 1

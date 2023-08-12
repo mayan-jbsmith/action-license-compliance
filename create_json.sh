@@ -75,7 +75,7 @@ construct_slack_message() {
             },"
 
     echo "        {
-                \"color\": \"#fcba03\",
+                \"color\": \"#87CEEB\",
                 \"blocks\": [
                     {
                         \"type\": \"divider\"

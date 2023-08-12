@@ -1,3 +1,3 @@
 # action-license-compliance
 
-Testing 1 123
+Description goes here.
