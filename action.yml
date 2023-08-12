@@ -1,9 +1,6 @@
-name: 'Arazutech: Python License Check'
+name: 'Arazutech: 3Python License Check'
 description: 'Checks the licenses of Python dependencies and sends notifications if restricted licenses are found'
 inputs:
-  slack_webhook_url:
-    description: 'Slack webhook URL for sending notifications'
-    required: true
   allow_list:
     description: 'Regex pattern for allowed licenses'
     default: '(MIT|BSD|ISC|Apache|CC0)'
@@ -11,10 +8,10 @@ runs:
   using: 'composite'
   steps:
     - name: 'Check out Code'
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: 'Set up Python'
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: '3.10'
 
