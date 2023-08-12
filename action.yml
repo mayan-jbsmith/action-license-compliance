@@ -38,12 +38,14 @@ runs:
         chmod +x show_license.sh
         ./show_license.sh licenses.csv
       shell: bash
+      if: always()
 
     - name: 'Format output to JSON'
       run: |
         chmod +x create_json.sh
         ./create_json.sh invalid.csv
       shell: bash
+      if: always()
 
     - name: 'POST JSON'
       run: |
@@ -51,3 +53,4 @@ runs:
         escaped_json_data=$(echo "$json_data" | jq -c .)
         curl -X POST -H 'Content-type: application/json' --data "$escaped_json_data" ${{ inputs.slack_webhook_url }}
       shell: bash
+      if: always()
