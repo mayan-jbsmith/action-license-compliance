@@ -11,7 +11,7 @@ runs:
   using: 'composite'
   steps:
     - name: Python init 
-      uses: python.yaml
+      uses: ./path/to/python.yml
 
     - name: 'Check Dependencies Licenses'
       run: |
