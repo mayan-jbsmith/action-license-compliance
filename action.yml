@@ -1,23 +1,56 @@
-name: 'Python Licence Compliance'
-description: 'Greet someone'
+name: 'Python License Check'
+description: 'Checks the licenses of Python dependencies and sends notifications if restricted licenses are found'
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
+  slack_webhook_url:
+    description: 'Slack webhook URL for sending notifications'
     required: true
-    default: 'World'
-outputs:
-  random-number:
-    description: "Random number"
-    value: ${{ steps.random-number-generator.outputs.random-number }}
+  allow_list:
+    description: 'Regex pattern for allowed licenses'
+    default: '(MIT|BSD|ISC|Apache|CC0)'
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
-    - run: echo Hello ${{ inputs.who-to-greet }}.
+    - name: 'Check out Code'
+      uses: actions/checkout@v2
+
+    - name: 'Set up Python'
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.10'
+
+    - name: 'Install dependencies'
+      run: pip install -r requirements.txt
       shell: bash
-    - id: random-number-generator
-      run: echo "random-number=$(echo $RANDOM)" >> $GITHUB_OUTPUT
+
+    - name: 'Install license checker library'
+      run: pip install pip-licenses
       shell: bash
-    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
+
+    - name: 'Run license check on dependencies'
+      run: pip-licenses --format=csv --with-urls --no-version --output-file=licenses.csv
       shell: bash
-    - run: goodbye.sh
+
+    - name: 'Check for restricted licenses'
+      run: |
+        chmod +x ${{ github.action_path }}/license_check.sh
+        ${{ github.action_path }}/license_check.sh licenses.csv "${{ inputs.allow_list }}"
+      shell: bash
+
+    - name: 'Show all license info'
+      run: |
+        chmod +x ${{ github.action_path }}/show_license.sh
+        ${{ github.action_path }}/show_license.sh licenses.csv
+      shell: bash
+
+    - name: 'Format output to JSON'
+      run: |
+        chmod +x ${{ github.action_path }}/create_json.sh
+        ${{ github.action_path }}/create_json.sh invalid.csv
+      shell: bash
+
+    - name: 'POST JSON'
+      run: |
+        json_data=$(cat slack_message.json)
+        escaped_json_data=$(echo "$json_data" | jq -c .)
+        curl -X POST -H 'Content-type: application/json' --data "$escaped_json_data" ${{ inputs.slack_webhook_url }}
       shell: bash
