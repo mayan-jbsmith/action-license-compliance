@@ -1,0 +1,22 @@
+steps:
+  - name: Checkout Code
+    uses: actions/checkout@v3
+    shell: bash
+
+  - name: Setup Node.js
+    uses: actions/setup-node@v3
+    with:
+      node-version: 18
+    shell: bash
+
+  - name: Install Dependencies
+    run: npm install
+    shell: bash
+
+  - name: Install license checker
+    run: npm i license-checker
+    shell: bash
+
+  - name: Run license checker
+    run: npx license-checker --csv --direct >> licenses.csv
+    shell: bash
