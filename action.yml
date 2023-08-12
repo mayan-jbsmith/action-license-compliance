@@ -6,7 +6,7 @@ inputs:
     required: true
   allow_list:
     description: 'Regex pattern for allowed licenses'
-    default: '(MIT|BSD|ISC|Apache|CC0)'
+    default: '(MIT|BSD|ISC|Apache|CC0|buyer-app)'
 runs:
   using: 'composite'
   steps:
