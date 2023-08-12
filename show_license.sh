@@ -12,7 +12,6 @@ process_licenses "$INPUT_FILE" "$ALLOW_LIST" "$BLOCK_LIST"
     LICENSE_COUNTER=0
 
     # Display the message
-    echo "<h4>$FAIL_COUNTER / $TOTAL_COUNTER licenses need to be researched.</h4>"
     echo "<table>"
     echo "<th>#</th> <th>Status</th> <th>Name</th> <th>License Type</th>"
 } >>"$GITHUB_STEP_SUMMARY"
