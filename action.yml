@@ -73,3 +73,22 @@ runs:
       ${{ github.action_path }}/show_license.sh licenses.csv "${{ inputs.allow_list }}" "${{ inputs.block_list }}"
     shell: bash
     if: always()
+  
+  - name: 'Format Output as JSON'
+    run: |
+        chmod +x ${{ github.action_path }}/create_json.sh
+        ${{ github.action_path }}/create_json.sh invalid.csv
+    shell: bash
+    if: always()
+
+  - name: 'Notify on Restricted Licenses'
+    run: |
+        if [ -n "${{ inputs.slack_webhook_url }}" ]; then
+          json_data=$(cat slack_message.json)
+          escaped_json_data=$(echo "$json_data" | jq -c .)
+          curl -X POST -H 'Content-type: application/json' --data "$escaped_json_data" ${{ inputs.slack_webhook_url }}
+        else
+          echo "Slack webhook URL not provided. Skipping notification."
+        fi
+    shell: bash
+    if: always()
