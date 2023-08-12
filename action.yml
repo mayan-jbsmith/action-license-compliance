@@ -1,4 +1,4 @@
-name: 'Python License Check'
+name: 'Arazutech: Python License Check'
 description: 'Checks the licenses of Python dependencies and sends notifications if restricted licenses are found'
 inputs:
   slack_webhook_url:
