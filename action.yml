@@ -7,16 +7,13 @@ inputs:
   allow_list:
     description: 'Regex pattern for allowed licenses'
     default: '(MIT|BSD|ISC|Apache|CC0|buyer-app)'
-  project_type:
-    description: 'Type of the project (nodejs or python)'
-    required: true
 runs:
   using: 'composite'
   steps:
     - name: 'Check Dependencies Licenses'
       run: |
         chmod +x ${{ github.action_path }}/license_check.sh
-        ${{ github.action_path }}/license_check.sh licenses.csv "${{ inputs.allow_list }}" "${{ inputs.project_type }}"
+        ${{ github.action_path }}/license_check.sh licenses.csv "${{ inputs.allow_list }}"
       shell: bash
 
     - name: 'Display License Information'
