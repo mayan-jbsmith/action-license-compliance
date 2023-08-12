@@ -2,7 +2,7 @@ name: 'Arazutech: 3Python License Check'
 description: 'Checks the licenses of Python dependencies and sends notifications if restricted licenses are found'
 inputs:
   allow_list:
-    description: 'Regex pattern for allowed licenses'
+    description: 'Regex pattern for all allowed licenses'
     default: '(MIT|BSD|ISC|Apache|CC0)'
 runs:
   using: 'composite'
