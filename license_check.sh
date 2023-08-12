@@ -1,15 +1,14 @@
 #!/bin/bash
 
+source common_functions.sh
+
 TOTAL_COUNTER=0
 FAIL_COUNTER=0
 INPUT_FILE="$1"
 ALLOW_LIST="$2"
 BLOCK_LIST="$3"
 
-if [ $# -ne 3 ]; then
-    echo "Usage: $0 <licenses.csv> <allow_list>"
-    exit 1
-fi
+process_licenses "$INPUT_FILE" "$ALLOW_LIST" "$BLOCK_LIST"
 
 {
     echo "<h4>Invalid licences</h4>"

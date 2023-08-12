@@ -1,28 +1,18 @@
 #!/bin/bash
 
+source common_functions.sh
+
 INPUT_FILE="$1"
 ALLOW_LIST="$2"
 BLOCK_LIST="$3"
 
-if [ $# -ne 3 ]; then
-    echo "Usage: $0 <licenses.csv> <allow_list> <block_list>"
-    exit 1
-fi
+process_licenses "$INPUT_FILE" "$ALLOW_LIST" "$BLOCK_LIST"
 
 {
     LICENSE_COUNTER=0
-    FAIL_COUNTER=0
-
-    # Count the number of licenses that need to be researched
-    while IFS=',' read -r line; do
-        if ! [[ ${line} =~ $ALLOW_LIST ]] || [[ ${line} =~ $BLOCK_LIST ]]; then
-            FAIL_COUNTER=$((FAIL_COUNTER + 1))
-        fi
-        LICENSE_COUNTER=$((LICENSE_COUNTER + 1))
-    done < <(sed 1d "$INPUT_FILE")
 
     # Display the message
-    echo "<h4>$FAIL_COUNTER / $LICENSE_COUNTER licenses need to be researched.</h4>"
+    echo "<h4>$FAIL_COUNTER / $TOTAL_COUNTER licenses need to be researched.</h4>"
     echo "<table>"
     echo "<th>#</th> <th>Status</th> <th>Name</th> <th>License Type</th>"
 } >>"$GITHUB_STEP_SUMMARY"
