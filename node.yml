@@ -1,22 +1,27 @@
-steps:
-  - name: Checkout Code
-    uses: actions/checkout@v3
-    shell: bash
+name: 'Node.js License Compliance Checker'
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 
-  - name: Setup Node.js
-    uses: actions/setup-node@v3
-    with:
-      node-version: 18
-    shell: bash
+jobs:
+  check-licenses-node:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Check out Code'
+        uses: actions/checkout@v3
 
-  - name: Install Dependencies
-    run: npm install
-    shell: bash
+      - name: 'Setup Node.js'
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18
 
-  - name: Install license checker
-    run: npm i license-checker
-    shell: bash
+      - name: 'Install Dependencies'
+        run: npm install
 
-  - name: Run license checker
-    run: npx license-checker --csv --direct >> licenses.csv
-    shell: bash
+      - name: 'Install license checker'
+        run: npm i license-checker
+
+      - name: 'Run license checker'
+        run: npx license-checker --csv --direct >> licenses.csv

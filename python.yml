@@ -1,20 +1,21 @@
-# python.yml
-steps:
-  - name: 'Check out Code'
-    uses: actions/checkout@v3
+jobs:
+  license_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Set up Python'
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+        shell: bash
 
-  - name: 'Set up Python'
-    uses: actions/setup-python@v3
-    with:
-      python-version: '3.10'
+      - name: 'Install Dependencies'
+        run: pip install -r requirements.txt
+        shell: bash
 
-  - name: 'Install Dependencies'
-    run: |
-      pip install -r requirements.txt
+      - name: 'Install license checker library'
+        run: pip install pip-licenses
+        shell: bash
 
-  - name: 'Install license checker library'
-    run: |
-      pip install pip-licenses
-
-  - name: 'Run license check on dependencies'
-    run: pip-licenses --format=csv --with-urls --no-version --output-file=licenses.csv
+      - name: 'Run license check on dependencies'
+        run: pip-licenses --format=csv --with-urls --no-version --output-file=licenses.csv
+        shell: bash

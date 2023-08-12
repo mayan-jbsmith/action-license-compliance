@@ -10,37 +10,66 @@ inputs:
   block_list:
     description: 'Regex pattern for blocked licenses'
     default: '(GPL|MPL|LGPL)'
+  runtime:
+    description: 'Project runtime'
+    default: 'python'
+
 runs:
   using: 'composite'
   steps:
-    - name: 'Check Dependencies Licenses'
-      run: |
-        chmod +x ${{ github.action_path }}/license_check.sh
-        ${{ github.action_path }}/license_check.sh licenses.csv "${{ inputs.allow_list }}" "${{ inputs.block_list }}"
-      shell: bash
+  - name: 'Check out Code'
+    uses: actions/checkout@v3
 
-    - name: 'Display License Information'
-      run: |
-        chmod +x ${{ github.action_path }}/show_license.sh
-        ${{ github.action_path }}/show_license.sh licenses.csv "${{ inputs.allow_list }}" "${{ inputs.block_list }}"
-      shell: bash
-      if: always()
+  - name: 'Setup Node.js'
+    uses: actions/setup-node@v3
+    with:
+      node-version: 18
+    if: ${{ inputs.runtime == 'node' }}
 
-    - name: 'Format Output as JSON'
-      run: |
-        chmod +x ${{ github.action_path }}/create_json.sh
-        ${{ github.action_path }}/create_json.sh invalid.csv
-      shell: bash
-      if: always()
+  - name: 'Setup Python'
+    uses: actions/setup-python@v3
+    with:
+      python-version: '3.10'
+    if: ${{ inputs.runtime == 'python' }}
 
-    - name: 'Notify on Restricted Licenses'
-      run: |
-        if [ -n "${{ inputs.slack_webhook_url }}" ]; then
-          json_data=$(cat slack_message.json)
-          escaped_json_data=$(echo "$json_data" | jq -c .)
-          curl -X POST -H 'Content-type: application/json' --data "$escaped_json_data" ${{ inputs.slack_webhook_url }}
-        else
-          echo "Slack webhook URL not provided. Skipping notification."
-        fi
-      shell: bash
-      if: always()
+  - name: 'Install Node Dependencies'
+    run: npm ci
+    shell: bash
+    if: ${{ inputs.runtime == 'node' }}
+
+  - name: 'Install Python Dependencies'
+    run: pip install -r requirements.txt
+    shell: bash
+    if: ${{ inputs.runtime == 'python' }}
+
+  - name: 'Install Node license checker'
+    run: npm i license-checker
+    shell: bash
+    if: ${{ inputs.runtime == 'node' }}
+
+  - name: 'Install Python license checker'
+    run: pip install pip-licenses
+    shell: bash
+    if: ${{ inputs.runtime == 'python' }}
+
+  - name: 'Run license checker'
+    run: |
+      if [ "${{ inputs.runtime }}" == "node" ]; then
+        npx license-checker --csv --direct >> licenses.csv
+      elif [ "${{ inputs.runtime }}" == "python" ]; then
+        pip-licenses --format=csv --with-urls --no-version --output-file=licenses.csv
+      fi
+    shell: bash
+
+  - name: 'Check Dependencies Licenses'
+    run: |
+      chmod +x ${{ github.action_path }}/license_check.sh
+      ${{ github.action_path }}/license_check.sh licenses.csv "${{ inputs.allow_list }}" "${{ inputs.block_list }}"
+    shell: bash
+
+  - name: 'Display License Information'
+    run: |
+      chmod +x ${{ github.action_path }}/show_license.sh
+      ${{ github.action_path }}/show_license.sh licenses.csv "${{ inputs.allow_list }}" "${{ inputs.block_list }}"
+    shell: bash
+    if: always()
