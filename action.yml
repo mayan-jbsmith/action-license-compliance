@@ -7,56 +7,9 @@ inputs:
   allow_list:
     description: 'Regex pattern for allowed licenses'
     default: '(MIT|BSD|ISC|Apache|CC0)'
-  language:
-    description: 'Language of the repository (python or javascript)'
-    required: true
 runs:
   using: 'composite'
   steps:
-    - name: 'Check out Code'
-      uses: actions/checkout@v3
-
-    - name: 'Set up Python'
-      if: ${{ inputs.language == 'python' }}
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.10'
-
-    - name: Setup Node.js
-      if: ${{ inputs.language == 'javascript' }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: 18
-
-    - name: 'Install Dependencies'
-      if: ${{ inputs.language == 'python' }}
-      run: |
-        pip install -r requirements.txt
-      shell: bash
-
-    - name: 'Install Dependencies'
-      if: ${{ inputs.language == 'javascript' }}
-      run: |
-        npm install
-      shell: bash
-
-    - name: 'Install license checker library'
-      if: ${{ inputs.language == 'python' }}
-      run: |
-        pip install pip-licenses
-      shell: bash
-
-    - name: 'Install license checker library'
-      if: ${{ inputs.language == 'javascript' }}
-      run: |
-        npm install license-checker
-      shell: bash
-
-    - name: Run license checker
-      if: ${{ inputs.language == 'javascript' }}
-      run: npx license-checker --csv --direct >> licenses.csv
-      shell: bash
-
     - name: 'Run license check on dependencies'
       run: pip-licenses --format=csv --with-urls --no-version --output-file=licenses.csv
       shell: bash
