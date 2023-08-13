@@ -52,6 +52,8 @@ runs:
           pip-licenses --format=csv --with-urls --no-version --output-file=licenses.csv
         fi
       shell: bash
+      if: ${{ inputs.runtime == 'node' || inputs.runtime == 'python' }}
+      
 
     - name: 'Check Dependencies Licenses'
       run: |
