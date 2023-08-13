@@ -1,9 +1,12 @@
 #!/bin/bash
 
-construct_slack_message() {
-    local csv_file="$1"
-    local dependencies_count="$2"
+csv_file="$1"
+repository_name="$GITHUB_REPOSITORY"
+workflow_run_id="$GITHUB_RUN_ID"
+action_summary_link="${GITHUB_SERVER_URL}/${repository_name}/actions/runs/${workflow_run_id}"
+dependencies_count=$(($(cat "$1" | wc -l) - 0))
 
+construct_slack_message() {
     echo "{
         \"attachments\": [
             {
@@ -32,14 +35,32 @@ construct_slack_message() {
                         \"type\": \"divider\"
                     },"
 
-    # Add debugging output to print CSV data
-    echo "Debug: Reading CSV data"
-    awk -F ',' -v OFS=',' 'NR>1 {gsub(/"/, "", $1); gsub(/"/, "", $2); gsub(/"/, "", $3); print $1, $2, $3}' "$csv_file" | while IFS=',' read -r name license_type dep_url; do
-        # Debugging output
-        echo "Debug: Processing CSV line: $name, $license_type, $dep_url"
+    dependencies=$(cat "$1" | tr -d '\r')
+    first_line=true
+
+    while IFS=',' read -r line; do
+        name=$(echo "$line" | awk -F ',' '{gsub(/"/, "", $1); print $1}')
+        license_type=$(echo "$line" | awk -F ',' '{gsub(/"/, "", $2); print $2}')
+        dep_url=$(echo "$line" | awk -F ',' '{gsub(/"/, "", $3); print $3}')
+
+        if [ "$first_line" = "true" ]; then
+            first_line=false
+        else
+            echo ","
+        fi
 
         IFS=';' read -ra licenses <<<"$license_type"
-        license_text=$(printf "\\n• %s" "${licenses[@]}")
+        license_text=""
+
+        first_license=true
+        for license in "${licenses[@]}"; do
+            if [ "$first_license" = true ]; then
+                license_text+="\\n•  $license"
+                first_license=false
+            else
+                license_text+="\\n• $license"
+            fi
+        done
 
         echo "                {
                         \"type\": \"section\",
@@ -48,11 +69,12 @@ construct_slack_message() {
                             \"text\": \" *<$dep_url|$name>*$license_text\"
                         }
                     }"
-    done
+    done <<<"$dependencies"
 
     echo "            ]
-            },
-            {
+            },"
+
+    echo "        {
                 \"color\": \"#87CEEB\",
                 \"blocks\": [
                     {
@@ -69,15 +91,11 @@ construct_slack_message() {
                         ]
                     }
                 ]
-            }
-        ]
+            }"
+
+    echo "    ]
     }"
 }
-
-csv_file="$1"
-repository_name="$GITHUB_REPOSITORY"
-workflow_run_id="$GITHUB_RUN_ID"
-action_summary_link="${GITHUB_SERVER_URL}/${repository_name}/actions/runs/${workflow_run_id}"
 
 if [ -z "$csv_file" ]; then
     echo "Usage: ./csv_to_text.sh <path_to_csv_file>"
@@ -89,7 +107,5 @@ if [ ! -f "$csv_file" ]; then
     exit 1
 fi
 
-dependencies_count=$(($(wc -l <"$csv_file") - 1))
-
-slack_data=$(construct_slack_message "$csv_file" "$dependencies_count")
+slack_data=$(construct_slack_message "$csv_file")
 echo "$slack_data" >slack_message.json
