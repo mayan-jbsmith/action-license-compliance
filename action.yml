@@ -33,23 +33,16 @@ runs:
       if: ${{ inputs.runtime == 'python' }}
 
     - name: 'Install Dependencies'
-      run: npm ci
-      shell: bash
-      if: ${{ inputs.runtime == 'node' }}
-
-    - name: 'Install Dependencies'
-      run: pip install -r requirements.txt
-      shell: bash
-      if: ${{ inputs.runtime == 'python' }}
-
-    - name: 'Install license checkers'
       run: |
         if [[ "${{ inputs.runtime }}" == "node" ]]; then
+          npm ci
           npm i license-checker
         elif [[ "${{ inputs.runtime }}" == "python" ]]; then
+          pip install -r requirements.txt
           pip install pip-licenses
         fi
       shell: bash
+      if: ${{ inputs.runtime == 'node' || inputs.runtime == 'python' }}
 
     - name: 'Run license checker'
       run: |
@@ -68,8 +61,8 @@ runs:
 
     - name: 'Display License Information'
       run: |
-        chmod +x ${{ github.action_path }}/show_license.sh
-        ${{ github.action_path }}/show_license.sh licenses.csv "${{ inputs.allow_list }}" "${{ inputs.block_list }}"
+        chmod +x ${{ github.action_path }}/show_all_licenses.sh
+        ${{ github.action_path }}/show_all_licenses.sh licenses.csv "${{ inputs.allow_list }}" "${{ inputs.block_list }}"
       shell: bash
       if: always()
 
