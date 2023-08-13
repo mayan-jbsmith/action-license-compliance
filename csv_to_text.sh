@@ -21,3 +21,5 @@ dependencies_count=$(($(wc -l <"$csv_file") - 1))
 
 slack_data=$(construct_slack_message "$csv_file" "$dependencies_count")
 echo "$slack_data" >slack_message.json
+
+# Rest of your script remains unchanged
