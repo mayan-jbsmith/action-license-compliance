@@ -17,7 +17,7 @@ if [ ! -f "$csv_file" ]; then
     exit 1
 fi
 
-dependencies_count=$(($(wc -l < "$csv_file") - 1))
+dependencies_count=$(($(wc -l <"$csv_file") - 1))
 
 slack_data=$(construct_slack_message "$csv_file" "$dependencies_count")
 echo "$slack_data" >slack_message.json
