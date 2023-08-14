@@ -21,13 +21,13 @@ runs:
       uses: actions/checkout@v3
 
     - name: 'Setup Environment'
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: 18
       if: ${{ inputs.runtime == 'node' }}
 
     - name: 'Setup Environment'
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: '3.10'
       if: ${{ inputs.runtime == 'python' }}
