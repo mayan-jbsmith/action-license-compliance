@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source common_functions.sh
+source step_summary_format.sh
 
 INPUT_FILE="$1"
 ALLOW_LIST="$2"

@@ -1,55 +1,42 @@
-# Arazutech: Python License Check GitHub Action
+# Arazutech: License Checker
 
-This GitHub Action checks the licenses of Python dependencies and sends notifications if restricted licenses are found. It can be configured to use a Slack webhook to send notifications.
+This GitHub Action checks the licenses of Python/Node dependencies and sends notifications if restricted licenses are found. It can be configured to use a Slack webhook to send notifications.
 
 ## Inputs
 
-slack_webhook_url (required): Slack webhook URL for sending notifications.
-allow_list (optional): A regex pattern for allowed licenses. Default: '(MIT|BSD|ISC|Apache|CC0|buyer-app)'.
+runtime (required): Project runtime eg. "node" or "python".\
+slack_webhook_url (required): Slack webhook URL for sending notifications.\
+allow_list (optional): A regex pattern for allowed licenses.\
+block_list (optional): A regex pattern for blocked licenses.
+
 
 ## Example Usage
 
 ```yaml
-name: 'Arazutech: Python License Check'
-description: 'Checks the licenses of Python dependencies and sends notifications if restricted licenses are found'
-inputs:
-  slack_webhook_url:
-    description: 'Slack webhook URL for sending notifications'
-    required: true
-  allow_list:
-    description: 'Regex pattern for allowed licenses'
-    default: '(MIT|BSD|ISC|Apache|CC0|buyer-app)'
-runs:
-  using: 'composite'
-  steps:
+name: Dependency License Check
 
-    - name: 'Check for restricted licenses'
-      run: |
-        chmod +x ${{ github.action_path }}/license_check.sh
-        ${{ github.action_path }}/license_check.sh licenses.csv "${{ inputs.allow_list }}"
-      shell: bash
+on:
+  push:
+    branches: [ main ]
+  pull_request:
 
-    - name: 'Show all license info'
-      run: |
-        chmod +x ${{ github.action_path }}/show_license.sh
-        ${{ github.action_path }}/show_license.sh licenses.csv
-      shell: bash
-      if: always()
-
-    - name: 'Format output to JSON'
-      run: |
-        chmod +x ${{ github.action_path }}/create_json.sh
-        ${{ github.action_path }}/create_json.sh invalid.csv
-      shell: bash
-      if: always()
-
-    - name: 'POST JSON'
-      run: |
-        json_data=$(cat slack_message.json)
-        escaped_json_data=$(echo "$json_data" | jq -c .)
-        curl -X POST -H 'Content-type: application/json' --data "$escaped_json_data" ${{ inputs.slack_webhook_url }}
-      shell: bash
-      if: always()
+jobs:
+  check-licenses:
+    runs-on: ubuntu-latest
+    env:
+      RUNTIME: 'python'
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      ALLOW_LIST: ${{ vars.REGEX_ALLOW_LIST }}
+      BLOCK_LIST: ${{ vars.REGEX_BLOCK_LIST }}
+    steps:            
+      - name: Python License Check
+        uses: arazutech/action-license-compliance@v53
+        with:
+          runtime: ${{ env.RUNTIME }}
+          slack_webhook_url: ${{ env.SLACK_WEBHOOK_URL }}
+          allow_list: ${{ env.ALLOW_LIST }}
+          block_list: ${{ env.BLOCK_LIST }}
+        if: always()
 ```
 
 ## License

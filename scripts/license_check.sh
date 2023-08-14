@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source common_functions.sh
+source step_summary_format.sh
 
 TOTAL_COUNTER=0
 FAIL_COUNTER=0
