@@ -1,16 +1,18 @@
 # Arazutech: License Checker
 
-This GitHub Action checks the licenses of Python/Node dependencies and sends notifications if restricted licenses are found. It can be configured to use a Slack webhook to send notifications.
+The Arazutech License Compliance Checker GitHub Action helps you maintain license compliance by verifying the licenses of Python/Node dependencies in your projects. It automatically scans your dependencies and sends notifications if restricted licenses are detected. You can configure it to utilize a Slack webhook for sending notifications.
 
 ## Inputs
 
-runtime (required): Project runtime eg. "node" or "python".\
-slack_webhook_url (required): Slack webhook URL for sending notifications.\
-allow_list (optional): A regex pattern for allowed licenses.\
-block_list (optional): A regex pattern for blocked licenses.
+- runtime (required): Specify the project runtime, e.g., "node" or "python".
+- slack_webhook_url (required): Provide the Slack webhook URL for notifications.
+- allow_list (optional): Define a regex pattern for allowed licenses.
+- block_list (optional): Set a regex pattern for blocked licenses.
 
 
 ## Example Usage
+
+Ensure your repository contains the necessary secrets and variables before configuring the GitHub Action. Modify your workflow YAML file as follows:
 
 ```yaml
 name: Dependency License Check
@@ -38,6 +40,7 @@ jobs:
           block_list: ${{ env.BLOCK_LIST }}
         if: always()
 ```
+This example workflow sets up the Arazutech License Compliance Checker GitHub Action to run on push events to the main branch and on pull requests. Ensure that the necessary secrets and variables (SLACK_WEBHOOK_URL, REGEX_ALLOW_LIST, and REGEX_BLOCK_LIST) are properly configured in your repository settings.
 
 ## License
 
