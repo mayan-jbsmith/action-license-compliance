@@ -1,18 +1,18 @@
 name: 'License Compliance Checker'
-description: 'Check the licenses of dependencies and optionally send Slack notifications if restricted licenses are found'
+description: 'Check the licenses of dependencies and send Slack notifications if restricted licenses are found'
 inputs:
   slack_webhook_url:
-    description: 'Slack webhook URL for sending notifications (optional)'
-    required: false
+    description: 'Slack webhook URL for sending notifications'
+    required: true
   allow_list:
     description: 'Regex pattern for allowed licenses'
-    default: '(MIT|BSD|ISC|Apache|CC0|buyer-app)'
+    required: true
   block_list:
     description: 'Regex pattern for blocked licenses'
-    default: '(GPL|MPL|LGPL)'
+    required: true
   runtime:
     description: 'Project runtime'
-    default: 'python'
+    required: true
 
 runs:
   using: 'composite'
@@ -21,13 +21,13 @@ runs:
       uses: actions/checkout@v3
 
     - name: 'Setup Environment'
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v2
       with:
         node-version: 18
       if: ${{ inputs.runtime == 'node' }}
 
     - name: 'Setup Environment'
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v2
       with:
         python-version: '3.10'
       if: ${{ inputs.runtime == 'python' }}
@@ -53,25 +53,24 @@ runs:
         fi
       shell: bash
       if: ${{ inputs.runtime == 'node' || inputs.runtime == 'python' }}
-      
 
     - name: 'Check Dependencies Licenses'
       run: |
-        chmod +x ${{ github.action_path }}/license_check.sh
-        ${{ github.action_path }}/license_check.sh licenses.csv "${{ inputs.allow_list }}" "${{ inputs.block_list }}"
+        chmod +x ${{ github.action_path }}/scripts/license_check.sh
+        ${{ github.action_path }}/scripts/license_check.sh licenses.csv "${{ inputs.allow_list }}" "${{ inputs.block_list }}"
       shell: bash
 
     - name: 'Display License Information'
       run: |
-        chmod +x ${{ github.action_path }}/show_all_licenses.sh
-        ${{ github.action_path }}/show_all_licenses.sh licenses.csv "${{ inputs.allow_list }}" "${{ inputs.block_list }}"
+        chmod +x ${{ github.action_path }}/scripts/show_all_licenses.sh
+        ${{ github.action_path }}/scripts/show_all_licenses.sh licenses.csv "${{ inputs.allow_list }}" "${{ inputs.block_list }}"
       shell: bash
       if: always()
 
     - name: 'Format Output as JSON'
       run: |
-        chmod +x ${{ github.action_path }}/create_json.sh
-        ${{ github.action_path }}/create_json.sh invalid.csv
+        chmod +x ${{ github.action_path }}/scripts/create_json.sh
+        ${{ github.action_path }}/scripts/create_json.sh invalid.csv
       shell: bash
       if: always()
 
