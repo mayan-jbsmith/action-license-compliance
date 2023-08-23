@@ -6,6 +6,7 @@ The Arazutech License Compliance Checker GitHub Action helps you maintain licens
 - runtime (required): Specify the project runtime, e.g., "node" or "python".
 - allow_list (optional): Define a regex pattern for allowed licenses.
 - block_list (optional): Set a regex pattern for blocked licenses.
+- show_all (optional): Choose whether to show all licenses, both valid and invalid. ['true', 'false']
 
 
 ## Example Usage
@@ -34,6 +35,7 @@ jobs:
           runtime: ${{ env.RUNTIME }}
           allow_list: ${{ env.ALLOW_LIST }}
           block_list: ${{ env.BLOCK_LIST }}
+          show_all: 'true'
         if: always()
 ```
 This example workflow sets up the Arazutech License Compliance Checker GitHub Action to run on push events to the main branch and on pull requests. Ensure that the necessary secrets and variables (REGEX_ALLOW_LIST, and REGEX_BLOCK_LIST) are properly configured in your repository settings.
