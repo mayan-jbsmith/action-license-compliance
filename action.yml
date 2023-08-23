@@ -1,9 +1,6 @@
 name: 'License Compliance Checker'
-description: 'Check the licenses of dependencies and send Slack notifications if restricted licenses are found'
+description: 'Check the licenses of dependencies and output to step summary if restricted licenses are found'
 inputs:
-  slack_webhook_url:
-    description: 'Slack webhook URL for sending notifications'
-    required: true
   allow_list:
     description: 'Regex pattern for allowed licenses'
     required: true
