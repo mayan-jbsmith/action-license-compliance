@@ -1,11 +1,9 @@
 # Arazutech: License Checker
 
-The Arazutech License Compliance Checker GitHub Action helps you maintain license compliance by verifying the licenses of Python/Node dependencies in your projects. It automatically scans your dependencies and sends notifications if restricted licenses are detected. You can configure it to utilize a Slack webhook for sending notifications.
+The Arazutech License Compliance Checker GitHub Action helps you maintain license compliance by verifying the licenses of Python/Node dependencies in your projects. It automatically scans your dependencies and outputs to the GitHub Action step summary 
 
 ## Inputs
-
 - runtime (required): Specify the project runtime, e.g., "node" or "python".
-- slack_webhook_url (required): Provide the Slack webhook URL for notifications.
 - allow_list (optional): Define a regex pattern for allowed licenses.
 - block_list (optional): Set a regex pattern for blocked licenses.
 
@@ -27,7 +25,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RUNTIME: 'python'
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       ALLOW_LIST: ${{ vars.REGEX_ALLOW_LIST }}
       BLOCK_LIST: ${{ vars.REGEX_BLOCK_LIST }}
     steps:            
@@ -35,12 +32,11 @@ jobs:
         uses: arazutech/action-license-compliance@v53
         with:
           runtime: ${{ env.RUNTIME }}
-          slack_webhook_url: ${{ env.SLACK_WEBHOOK_URL }}
           allow_list: ${{ env.ALLOW_LIST }}
           block_list: ${{ env.BLOCK_LIST }}
         if: always()
 ```
-This example workflow sets up the Arazutech License Compliance Checker GitHub Action to run on push events to the main branch and on pull requests. Ensure that the necessary secrets and variables (SLACK_WEBHOOK_URL, REGEX_ALLOW_LIST, and REGEX_BLOCK_LIST) are properly configured in your repository settings.
+This example workflow sets up the Arazutech License Compliance Checker GitHub Action to run on push events to the main branch and on pull requests. Ensure that the necessary secrets and variables (REGEX_ALLOW_LIST, and REGEX_BLOCK_LIST) are properly configured in your repository settings.
 
 ## License
 

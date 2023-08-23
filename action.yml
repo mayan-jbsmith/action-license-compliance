@@ -13,6 +13,10 @@ inputs:
   runtime:
     description: 'Project runtime'
     required: true
+  show_all:
+    description: 'Whether to show all license information'
+    required: false
+    default: 'false'
 
 runs:
   using: 'composite'
@@ -60,28 +64,12 @@ runs:
         ${{ github.action_path }}/scripts/license_check.sh licenses.csv "${{ inputs.allow_list }}" "${{ inputs.block_list }}"
       shell: bash
 
-    - name: 'Display License Information'
+    - name: 'Show All License Information'
       run: |
-        chmod +x ${{ github.action_path }}/scripts/show_all_licenses.sh
-        ${{ github.action_path }}/scripts/show_all_licenses.sh licenses.csv "${{ inputs.allow_list }}" "${{ inputs.block_list }}"
-      shell: bash
-      if: always()
-
-    - name: 'Format Output as JSON'
-      run: |
-        chmod +x ${{ github.action_path }}/scripts/slack_message_format.sh
-        ${{ github.action_path }}/scripts/slack_message_format.sh invalid.csv
-      shell: bash
-      if: always()
-
-    - name: 'Notify on Restricted Licenses'
-      run: |
-        if [ -n "${{ inputs.slack_webhook_url }}" ]; then
-          json_data=$(cat slack_message.json)
-          escaped_json_data=$(echo "$json_data" | jq -c .)
-          curl -X POST -H 'Content-type: application/json' --data "$escaped_json_data" ${{ inputs.slack_webhook_url }}
-        else
-          echo "Slack webhook URL not provided. Skipping notification."
+        if [[ "${{ inputs.show_all }}" == 'true' ]]; then
+          chmod +x ${{ github.action_path }}/scripts/show_all_licenses.sh
+          ${{ github.action_path }}/scripts/show_all_licenses.sh licenses.csv "${{ inputs.allow_list }}" "${{ inputs.block_list }}"
         fi
       shell: bash
-      if: always()
+      if: always() && ${{ inputs.show_all == 'true' }}
+
