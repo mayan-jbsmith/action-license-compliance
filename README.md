@@ -1,4 +1,4 @@
-# Arazutech: License Checker
+# Arazutech: License Compliance Checker
 
 The Arazutech License Compliance Checker GitHub Action helps you maintain license compliance by verifying the licenses of Python/Node dependencies in your projects. It automatically scans your dependencies and outputs to the GitHub Action step summary 
 
