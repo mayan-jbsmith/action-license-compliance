@@ -69,5 +69,5 @@ runs:
         fi
       shell: bash
       # if: always() && ${{ inputs.show_all == 'true' }}
-      if: always() && ${{ inputs.show_all == 'true' }}
+      if: always()
 
