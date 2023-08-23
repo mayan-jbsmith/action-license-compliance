@@ -68,6 +68,6 @@ runs:
           ${{ github.action_path }}/scripts/show_all_licenses.sh licenses.csv "${{ inputs.allow_list }}" "${{ inputs.block_list }}"
         fi
       shell: bash
-      # if: always() && ${{ inputs.show_all == 'true' }}
-      if: always()
+      if: ${{ inputs.show_all == 'true' }}
+
 
