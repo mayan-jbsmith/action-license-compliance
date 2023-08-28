@@ -1,6 +1,6 @@
 # Andercore: License Compliance Checker
 
-The Arazutech License Compliance Checker GitHub Action helps you maintain license compliance by verifying the licenses of Python/Node dependencies in your projects. It automatically scans your dependencies and outputs to the GitHub Action step summary 
+The Andercore License Compliance Checker GitHub Action helps you maintain license compliance by verifying the licenses of Python/Node dependencies in your projects. It automatically scans your dependencies and outputs to the GitHub Action step summary 
 
 ## Inputs
 - runtime (required): Specify the project runtime, e.g., "node" or "python".
@@ -33,7 +33,7 @@ jobs:
       BLOCK_LIST: ${{ vars.REGEX_BLOCK_LIST }}
     steps:            
       - name: Python License Check
-        uses: arazutech/action-license-compliance@v53
+        uses: andercore-labs/action-license-compliance@v53
         with:
           runtime: ${{ env.RUNTIME }}
           allow_list: ${{ env.ALLOW_LIST }}
