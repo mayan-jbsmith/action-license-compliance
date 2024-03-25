@@ -80,6 +80,7 @@ runs:
 
     - name: 'Run license checker'
       run: |
+        cd ${{ github.workspace }}/${{ inputs.source_path }}
         if [[ "${{ inputs.runtime }}" == "node" ]]; then
           npx license-checker --csv --direct >> licenses.csv
         elif [[ "${{ inputs.runtime }}" == "python" ]]; then
@@ -90,6 +91,7 @@ runs:
 
     - name: 'Check Dependencies Licenses'
       run: |
+        cd ${{ github.workspace }}/${{ inputs.source_path }}
         chmod +x ${{ github.action_path }}/scripts/license_check.sh
         ${{ github.action_path }}/scripts/license_check.sh licenses.csv "${{ inputs.allow_list }}" "${{ inputs.block_list }}"
       shell: bash
@@ -97,6 +99,7 @@ runs:
     - name: 'Show All License Information'
       run: |
         if [[ "${{ inputs.show_all }}" == 'true' ]]; then
+          cd ${{ github.workspace }}/${{ inputs.source_path }}
           chmod +x ${{ github.action_path }}/scripts/show_all_licenses.sh
           ${{ github.action_path }}/scripts/show_all_licenses.sh licenses.csv "${{ inputs.allow_list }}" "${{ inputs.block_list }}"
         fi
