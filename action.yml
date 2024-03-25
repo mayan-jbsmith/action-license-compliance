@@ -59,8 +59,8 @@ runs:
     - name: 'Export requirements from pyproject.toml'
       run: |
         if [[ "${{ inputs.export_requirements }}" == "true" ]]; then
-          make install-poetry
-          # poetry export -f requirements.txt --output ./requirements.txt --without-hashes
+          curl -sSL https://install.python-poetry.org
+          poetry export -f requirements.txt --output ./requirements.txt --without-hashes
           ls -la
       shell: bash
 
