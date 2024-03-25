@@ -71,6 +71,7 @@ runs:
           npm ci
           npm i license-checker
         elif [[ "${{ inputs.runtime }}" == "python" ]]; then
+          cd ${{ github.workspace }}/${{ inputs.source_path }}
           pip install -r requirements.txt
           pip install pip-licenses
         fi
