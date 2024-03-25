@@ -47,7 +47,7 @@ runs:
 
     - name: 'Change to source path'
       run: |
-        cd ${{ GITHUB_WORKSPACE }}/${{ inputs.source_path }}
+        cd ${{ github.workspace }}/${{ inputs.source_path }}
         pwd
       shell: bash
 
