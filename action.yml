@@ -47,7 +47,7 @@ runs:
 
     - name: 'Change to source path'
       run: |
-        cd ${{ inputs.source_path }}
+        cd ${{ GITHUB_WORKSPACE }}/${{ inputs.source_path }}
       shell: bash
 
     - name: 'Install Dependencies'
