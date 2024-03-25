@@ -85,6 +85,7 @@ runs:
           npx license-checker --csv --direct >> licenses.csv
         elif [[ "${{ inputs.runtime }}" == "python" ]]; then
           pip-licenses --format=csv --with-urls --no-version --output-file=licenses.csv
+          cat licenses.csv
         fi
       shell: bash
       if: ${{ inputs.runtime == 'node' || inputs.runtime == 'python' }}
