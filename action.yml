@@ -26,6 +26,10 @@ inputs:
     descriptions: 'subpath for source that includes requirments.txt or package.json'
     required: false
     default: '.'
+  export_requirements:
+    description: 'when using Poetry, export the requirements.txt file from pyproject.toml basis'
+    required: true
+    default: 'true'
 
 runs:
   using: 'composite'
@@ -49,6 +53,13 @@ runs:
       run: |
         cd ${{ github.workspace }}/${{ inputs.source_path }}
         pwd
+        ls -la
+      shell: bash
+
+    -name: 'Export requirements from pyproject.toml'
+      run: |
+        if [[ "${{ inputs.export_requirements }}" == "true" ]]; then
+          make install-poetry && poetry export -f requirements.txt --output ./requirements.txt --without-hashes
       shell: bash
 
     - name: 'Install Dependencies'
