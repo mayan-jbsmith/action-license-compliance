@@ -22,12 +22,16 @@ inputs:
     description: 'Node.js version'
     required: false
     default: '18'
+  source_path:
+    descriptions: 'subpath for source that includes requirments.txt or package.json'
+    required: false
+    default: '.'
 
 runs:
   using: 'composite'
   steps:
     - name: 'Check out Code'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: 'Setup Environment'
       if: ${{ inputs.runtime == 'node' }}
@@ -37,9 +41,14 @@ runs:
 
     - name: 'Setup Environment'
       if: ${{ inputs.runtime == 'python' }}
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ inputs.python_version }}
+
+    - name: 'Change to source path'
+      run: |
+        cd ${{ inputs.source_path }}
+      shell: bash
 
     - name: 'Install Dependencies'
       run: |
