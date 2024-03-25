@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source step_summary_format.sh
+source $(dirname $0)/step_summary_format.sh
 
 TOTAL_COUNTER=0
 FAIL_COUNTER=0
