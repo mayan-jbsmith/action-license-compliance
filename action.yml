@@ -60,7 +60,7 @@ runs:
       run: |
         if [[ "${{ inputs.export_requirements }}" == "true" ]]; then
           make install-poetry
-          poetry export -f requirements.txt --output ./requirements.txt --without-hashes
+          # poetry export -f requirements.txt --output ./requirements.txt --without-hashes
           ls -la
       shell: bash
 
