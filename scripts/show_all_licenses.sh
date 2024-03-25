@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source step_summary_format.sh
+source $(dirname $0)/step_summary_format.sh
 
 INPUT_FILE="$1"
 ALLOW_LIST="$2"
